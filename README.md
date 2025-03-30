@@ -15,10 +15,14 @@ Be sure to visit the [original repository](https://github.com/omriharel/deej)
 Case files available in the [/models](https://github.com/Miodec/deej/tree/master/models) directory
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Build
 =======
 ![deej](assets/build-3d-annotated.JPG)
 >>>>>>> b4919ce (Added support for the MAX7219 LED matrix)
+=======
+![deej](build-3d-annotated.jpg)
+>>>>>>> 2bcae95 (fixup! README.md)
 
 Mini build log: https://imgur.com/a/baIDppz
 
