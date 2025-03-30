@@ -12,7 +12,7 @@ deej consists of a [lightweight desktop client](#features) written in Go, and an
 
 **[Download the latest release](https://github.com/omriharel/deej/releases/latest) | [Video demonstration](https://youtu.be/VoByJ4USMr8) | [Build video by Tech Always](https://youtu.be/x2yXbFiiAeI)**
 
-![deej](assets/build-3d-annotated.png)
+![deej](assets/build-3d-annotated.JPG)
 
 > _**Psst!** [No 3D printer? No problem!](./assets/build-shoebox.jpg)_ You can build deej on some cardboard, a shoebox or even a breadboard :)
 
@@ -60,6 +60,7 @@ deej is written in Go and [distributed](https://github.com/omriharel/deej/releas
 ### Hardware
 
 - The sliders are connected to 5 (or as many as you like) analog pins on an Arduino Nano/Uno board. They're powered from the board's 5V output (see schematic)
+- The LED matrix is connected to the board using the SPI interface (DIN, CS, CLK) and powered from the 5V output.
 - The board connects via a USB cable to the PC
 
 #### Schematic
