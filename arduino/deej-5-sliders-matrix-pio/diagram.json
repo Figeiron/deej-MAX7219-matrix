@@ -1,43 +1,98 @@
 {
-    "version": 1,
-    "author": "Anonymous maker",
-    "editor": "wokwi",
-    "parts": [
-      { "type": "wokwi-arduino-nano", "id": "nano", "top": -129.6, "left": 287.5, "attrs": {} },
-      {
-        "type": "wokwi-max7219-matrix",
-        "id": "matrix1",
-        "top": -268.2,
-        "left": -98.16,
-        "attrs": { "chain": "4" }
-      },
-      { "type": "wokwi-potentiometer", "id": "pot1", "top": -135.7, "left": -115.4, "attrs": {} },
-      { "type": "wokwi-potentiometer", "id": "pot2", "top": -135.7, "left": -38.6, "attrs": {} },
-      { "type": "wokwi-potentiometer", "id": "pot3", "top": -135.7, "left": 38.2, "attrs": {} },
-      { "type": "wokwi-potentiometer", "id": "pot4", "top": -135.7, "left": 115, "attrs": {} },
-      { "type": "wokwi-potentiometer", "id": "pot5", "top": -135.7, "left": 191.8, "attrs": {} }
-    ],
-    "connections": [
-      [ "pot1:GND", "pot2:GND", "black", [ "v28.8", "h76.8" ] ],
-      [ "pot3:GND", "pot2:GND", "black", [ "v28.8", "h-76.8" ] ],
-      [ "pot4:GND", "pot3:GND", "black", [ "v28.8", "h-76.8" ] ],
-      [ "pot5:GND", "pot4:GND", "black", [ "v28.8", "h-76.8" ] ],
-      [ "pot5:VCC", "pot4:VCC", "red", [ "v19.2", "h-77.6" ] ],
-      [ "pot4:VCC", "pot3:VCC", "red", [ "v19.2", "h-77.6" ] ],
-      [ "pot3:VCC", "pot2:VCC", "red", [ "v19.2", "h-77.6" ] ],
-      [ "pot2:VCC", "pot1:VCC", "red", [ "v19.2", "h-77.6" ] ],
-      [ "pot5:SIG", "nano:A0", "yellow", [ "v38.4", "h86" ] ],
-      [ "pot4:SIG", "nano:A1", "yellow", [ "v48", "h191.6" ] ],
-      [ "pot3:SIG", "nano:A2", "yellow", [ "v57.6", "h278" ] ],
-      [ "pot2:SIG", "nano:A3", "yellow", [ "v67.2", "h364.4" ] ],
-      [ "pot1:SIG", "nano:A4", "yellow", [ "v76.8", "h460.4" ] ],
-      [ "pot5:VCC", "nano:5V", "red", [ "v19.2", "h162.4" ] ],
-      [ "pot5:GND", "nano:GND.1", "black", [ "v28.8", "h211.2" ] ],
-      [ "matrix1:GND", "nano:GND.1", "black", [ "h220.8", "v201.6", "h-28.8" ] ],
-      [ "matrix1:V+", "nano:5V", "red", [ "h230.4", "v201.6", "h-57.6" ] ],
-      [ "matrix1:DIN", "nano:11", "blue", [ "h0" ] ],
-      [ "matrix1:CS", "nano:10", "purple", [ "h0" ] ],
-      [ "matrix1:CLK", "nano:13", "cyan", [ "h38.4", "v153.6", "h28.8" ] ]
-    ],
-    "dependencies": {}
-  }
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-nano", "id": "nano", "top": -129.6, "left": 287.5, "attrs": {} },
+    {
+      "type": "wokwi-max7219-matrix",
+      "id": "matrix1",
+      "top": -268.2,
+      "left": -98.16,
+      "attrs": { "chain": "4" }
+    },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": -135.7, "left": -115.4, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot2", "top": -135.7, "left": -38.6, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot3", "top": -135.7, "left": 38.2, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot4", "top": -135.7, "left": 115, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot5", "top": -135.7, "left": 191.8, "attrs": {} },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": -253,
+      "left": 537.6,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn2",
+      "top": -253,
+      "left": 624,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn3",
+      "top": -253,
+      "left": 710.4,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn4",
+      "top": -253,
+      "left": 796.8,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn5",
+      "top": -253,
+      "left": 873.6,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn6",
+      "top": -253,
+      "left": 960,
+      "attrs": { "color": "green", "xray": "1" }
+    }
+  ],
+  "connections": [
+    [ "pot1:GND", "pot2:GND", "black", [ "v28.8", "h76.8" ] ],
+    [ "pot3:GND", "pot2:GND", "black", [ "v28.8", "h-76.8" ] ],
+    [ "pot4:GND", "pot3:GND", "black", [ "v28.8", "h-76.8" ] ],
+    [ "pot5:GND", "pot4:GND", "black", [ "v28.8", "h-76.8" ] ],
+    [ "pot5:VCC", "pot4:VCC", "red", [ "v19.2", "h-77.6" ] ],
+    [ "pot4:VCC", "pot3:VCC", "red", [ "v19.2", "h-77.6" ] ],
+    [ "pot3:VCC", "pot2:VCC", "red", [ "v19.2", "h-77.6" ] ],
+    [ "pot2:VCC", "pot1:VCC", "red", [ "v19.2", "h-77.6" ] ],
+    [ "pot5:SIG", "nano:A0", "yellow", [ "v38.4", "h86" ] ],
+    [ "pot4:SIG", "nano:A1", "yellow", [ "v48", "h191.6" ] ],
+    [ "pot3:SIG", "nano:A2", "yellow", [ "v57.6", "h278" ] ],
+    [ "pot2:SIG", "nano:A3", "yellow", [ "v67.2", "h364.4" ] ],
+    [ "pot1:SIG", "nano:A4", "yellow", [ "v76.8", "h460.4" ] ],
+    [ "pot5:VCC", "nano:5V", "red", [ "v19.2", "h162.4" ] ],
+    [ "pot5:GND", "nano:GND.1", "black", [ "v28.8", "h211.2" ] ],
+    [ "matrix1:V+", "nano:5V", "red", [ "h230.4", "v201.6", "h-57.6" ] ],
+    [ "matrix1:DIN", "nano:11", "blue", [ "h0" ] ],
+    [ "matrix1:CS", "nano:10", "purple", [ "h0" ] ],
+    [ "matrix1:CLK", "nano:13", "cyan", [ "h38.4", "v153.6", "h28.8" ] ],
+    [ "btn1:2.l", "nano:9", "green", [ "v9.8", "h-201.6" ] ],
+    [ "btn2:2.l", "nano:8", "green", [ "v19.4", "h-278.4" ] ],
+    [ "btn3:2.l", "nano:7", "green", [ "v29", "h-355.2" ] ],
+    [ "btn4:2.l", "nano:6", "green", [ "v38.6", "h-432" ] ],
+    [ "btn5:2.l", "nano:5", "green", [ "v48.2", "h-499.2" ] ],
+    [ "btn6:2.l", "nano:4", "green", [ "v57.8", "h-576" ] ],
+    [ "btn1:1.r", "btn2:1.r", "black", [ "v-19.2", "h86.6" ] ],
+    [ "btn2:1.r", "btn3:1.r", "black", [ "v-19.2", "h86.6" ] ],
+    [ "btn3:1.r", "btn4:1.r", "black", [ "v-19.2", "h86.6" ] ],
+    [ "btn4:1.r", "btn5:1.r", "black", [ "v-19.2", "h77" ] ],
+    [ "btn5:1.r", "btn6:1.r", "black", [ "v-19.2", "h86.6" ] ],
+    [ "btn6:1.r", "btn6:2.r", "black", [ "v0" ] ],
+    [ "nano:GND.1", "matrix1:GND", "black", [ "v28.8", "h28.8", "v-201.6" ] ],
+    [ "nano:GND.1", "btn6:2.r", "black", [ "v28.8", "h566.4" ] ]
+  ],
+  "dependencies": {}
+}
