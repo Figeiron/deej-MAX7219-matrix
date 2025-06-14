@@ -55,6 +55,7 @@ deej is written in Go and [distributed](https://github.com/omriharel/deej/releas
 
 - The sliders are connected to 5 (or as many as you like) analog pins on an Arduino Nano/Uno board. They're powered from the board's 5V output (see schematic)
 - The LED matrix is connected to the board using the SPI interface (DIN, CS, CLK) and powered from the 5V output.
+- The LED matrix is connected to the board using the SPI interface (DIN, CS, CLK) and powered from the 5V output.
 - The board connects via a USB cable to the PC
 
 #### Schematic
