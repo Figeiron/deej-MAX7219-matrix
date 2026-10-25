@@ -1,0 +1,14 @@
+{
+  "id": "com.figeiron.volume-osd",
+  "name": "Volume OSD",
+  "type": "node",
+  "version": "1.0.0",
+  "author": "Figeiron",
+  "main": "main.js",
+  "settings": {
+    "status": {
+      "label": "OSD",
+      "type": "status"
+    }
+  }
+}
