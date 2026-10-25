@@ -9,10 +9,10 @@
 #define DEBUG_MIDI 0 // 1 = print incoming MIDI to Serial (pio device monitor)
 
 // #define HARDWARE_TYPE MD_MAX72XX::GENERIC_HW
-#define HARDWARE_TYPE MD_MAX72XX::PAROLA_HW
+// #define HARDWARE_TYPE MD_MAX72XX::PAROLA_HW
 // #define HARDWARE_TYPE MD_MAX72XX::ICSTATION_HW
 // #define HARDWARE_TYPE MD_MAX72XX::CUSTOM_HW
-// #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 #define MAX_DEVICES 4
 // Pro Micro hardware SPI: CLK = 15, DIN (MOSI) = 16
 #define CS_PIN 3
