@@ -1,0 +1,243 @@
+{
+  "name": "deej MAX7219 (Pro Micro)",
+  "input": "MAX7219 Mixer",
+  "output": "MAX7219 Mixer",
+  "controls": {
+    "01M5SN0VAHW0EKW7PF83AVCVJC": {
+      "name": "Кнопка 1",
+      "type": "input-button",
+      "isTrusted": true,
+      "command": "noteon",
+      "channel": 0,
+      "control": 60,
+      "automaticIndicator": true
+    },
+    "01M5SN0VAM01GD1EJCVZ5DFKZJ": {
+      "name": "Кнопка 2",
+      "type": "input-button",
+      "isTrusted": true,
+      "command": "noteon",
+      "channel": 0,
+      "control": 61,
+      "automaticIndicator": true
+    },
+    "01M5SN0VAQ9HECPF21PPQS05ZN": {
+      "name": "Кнопка 3",
+      "type": "input-button",
+      "isTrusted": true,
+      "command": "noteon",
+      "channel": 0,
+      "control": 62,
+      "automaticIndicator": true
+    },
+    "01M5SN0VASMV5F13HYRRDCJZBB": {
+      "name": "Кнопка 4",
+      "type": "input-button",
+      "isTrusted": true,
+      "command": "noteon",
+      "channel": 0,
+      "control": 63,
+      "automaticIndicator": true
+    },
+    "01M5SN0VAWYHMZBNJB9THSA5XW": {
+      "name": "Кнопка 5",
+      "type": "input-button",
+      "isTrusted": true,
+      "command": "noteon",
+      "channel": 0,
+      "control": 64,
+      "automaticIndicator": true
+    },
+    "01M5SN0VAYQ2AZVJDZK0HPKKBS": {
+      "name": "Кнопка 6",
+      "type": "input-button",
+      "isTrusted": true,
+      "command": "noteon",
+      "channel": 0,
+      "control": 65,
+      "automaticIndicator": true
+    },
+    "01M5SN0VB1TE14NS1AJK9AJF17": {
+      "name": "Повзунок 1 (Master)",
+      "type": "input-fader",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 1
+    },
+    "01M5SN0VB3PJD9RPR9VGJZPR5E": {
+      "name": "Матриця 1",
+      "type": "output",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 1,
+      "minValue": 0,
+      "maxValue": 127
+    },
+    "01M5SN0VB8DPWMV6G8H44XHMZC": {
+      "name": "Повзунок 2",
+      "type": "input-fader",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 2
+    },
+    "01M5SN0VBB5DYBNYW9SMGJPJJG": {
+      "name": "Матриця 2",
+      "type": "output",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 2,
+      "minValue": 0,
+      "maxValue": 127
+    },
+    "01M5SN0VBGF4VBSPX4JANYRWDR": {
+      "name": "Повзунок 3",
+      "type": "input-fader",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 3
+    },
+    "01M5SN0VBKQMH5S2HWEX3PW248": {
+      "name": "Матриця 3",
+      "type": "output",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 3,
+      "minValue": 0,
+      "maxValue": 127
+    },
+    "01M5SN0VBRFZ5MKNMDG88ESX10": {
+      "name": "Повзунок 4",
+      "type": "input-fader",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 4
+    },
+    "01M5SN0VBTDNV6K68T0P0TXX00": {
+      "name": "Матриця 4",
+      "type": "output",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 4,
+      "minValue": 0,
+      "maxValue": 127
+    },
+    "01M5SN0VBZVS6YCVPPQDB6ZFPW": {
+      "name": "Повзунок 5",
+      "type": "input-fader",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 5
+    },
+    "01M5SN0VC10BT2H77AHDAT4X5N": {
+      "name": "Матриця 5",
+      "type": "output",
+      "isTrusted": true,
+      "command": "cc",
+      "channel": 0,
+      "control": 5,
+      "minValue": 0,
+      "maxValue": 127
+    }
+  },
+  "groups": {
+    "01M5SN0VB6M076TCM6HT7E6ZS1": {
+      "name": "Повзунок 1 (Master)",
+      "faders": [
+        "01M5SN0VB1TE14NS1AJK9AJF17"
+      ],
+      "indicators": [
+        "01M5SN0VB3PJD9RPR9VGJZPR5E"
+      ],
+      "mute": [
+        "01M5SN0VAHW0EKW7PF83AVCVJC"
+      ],
+      "muteIndicators": [
+        "01M5SN0VAHW0EKW7PF83AVCVJC"
+      ],
+      "assign": []
+    },
+    "01M5SN0VBDW01XJWKVBTSSN55J": {
+      "name": "Повзунок 2",
+      "faders": [
+        "01M5SN0VB8DPWMV6G8H44XHMZC"
+      ],
+      "indicators": [
+        "01M5SN0VBB5DYBNYW9SMGJPJJG"
+      ],
+      "mute": [
+        "01M5SN0VAM01GD1EJCVZ5DFKZJ"
+      ],
+      "muteIndicators": [
+        "01M5SN0VAM01GD1EJCVZ5DFKZJ"
+      ],
+      "assign": []
+    },
+    "01M5SN0VBNWYTDS4RZWEW547ST": {
+      "name": "Повзунок 3",
+      "faders": [
+        "01M5SN0VBGF4VBSPX4JANYRWDR"
+      ],
+      "indicators": [
+        "01M5SN0VBKQMH5S2HWEX3PW248"
+      ],
+      "mute": [
+        "01M5SN0VAQ9HECPF21PPQS05ZN"
+      ],
+      "muteIndicators": [
+        "01M5SN0VAQ9HECPF21PPQS05ZN"
+      ],
+      "assign": []
+    },
+    "01M5SN0VBWBGJS5JPRAPDMPR57": {
+      "name": "Повзунок 4",
+      "faders": [
+        "01M5SN0VBRFZ5MKNMDG88ESX10"
+      ],
+      "indicators": [
+        "01M5SN0VBTDNV6K68T0P0TXX00"
+      ],
+      "mute": [
+        "01M5SN0VASMV5F13HYRRDCJZBB"
+      ],
+      "muteIndicators": [
+        "01M5SN0VASMV5F13HYRRDCJZBB"
+      ],
+      "assign": []
+    },
+    "01M5SN0VC3ND4Z5FZDNKFG8ZP9": {
+      "name": "Повзунок 5",
+      "faders": [
+        "01M5SN0VBZVS6YCVPPQDB6ZFPW"
+      ],
+      "indicators": [
+        "01M5SN0VC10BT2H77AHDAT4X5N"
+      ],
+      "mute": [
+        "01M5SN0VAWYHMZBNJB9THSA5XW"
+      ],
+      "muteIndicators": [
+        "01M5SN0VAWYHMZBNJB9THSA5XW"
+      ],
+      "assign": []
+    },
+    "01M5SN0VC5PHN4SXJPVCDPQSZ3": {
+      "name": "Кнопка 6",
+      "mute": [
+        "01M5SN0VAYQ2AZVJDZK0HPKKBS"
+      ],
+      "muteIndicators": [
+        "01M5SN0VAYQ2AZVJDZK0HPKKBS"
+      ],
+      "assign": []
+    }
+  }
+}
