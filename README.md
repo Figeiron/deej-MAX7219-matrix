@@ -1,68 +1,43 @@
 # deej-MAX7219
 
-A fork of [omriharel deej](https://github.com/omriharel/deej) with additional features:
+Physical audio controllers built on Arduino: sliders and buttons for per-app volume, optionally with a MAX7219 LED matrix. Started as a fork of [omriharel deej](https://github.com/omriharel/deej) with button support from [Miodec deej](https://github.com/Miodec/deej).
 
-- ✅ **Support for push buttons** (from [Miodec deej](https://github.com/Miodec/deej))
-- ✅ **MAX7219 LED matrix display support** (shows current potentiometers values)
-- ✅ All original deej features preserved
+![image](assets/build-3d.jpg)
 
-![image](assets/build-3d.jpg)  
+## 📂 Projects
 
-## 💡 About
+Each project is independent and lives in its own branch, with its own README, changelog, versions and releases.
 
-This project allows you to build a physical audio controller using Arduino-compatible boards.  
-This fork extends the original deej with support for:
+| Project | Branch | Board | PC software | Releases |
+|---|---|---|---|---|
+| **MIDI Mixer controller**: matrix shows real app volume, smooth cursors, on-screen volume display | [`midi-mixer`](../../tree/midi-mixer) | Pro Micro | [MIDI Mixer](https://www.midi-mixer.com) + Volume OSD plugin | [`midi-mixer/v*`](../../releases) |
+| **deej + MAX7219 matrix**: matrix shows slider positions | [`deej-matrix`](../../tree/deej-matrix) | Nano | deej (this fork) | [`deej-matrix/v*`](../../releases) |
+| **deej with buttons (vanilla)**: no display | [`deej-vanilla`](../../tree/deej-vanilla) | Pro Micro | deej (this fork) | [`deej-vanilla/v*`](../../releases) |
 
-- Tactile buttons (e.g., to mute apps or run hotkeys)
-- Visual display via MAX7219 matrix
-- Full compatibility with Miodec's original deej logic
+## 🏷️ Versions and releases
 
-![connection diagram](assets/schematic.png)
+- Every project has its own [SemVer](https://semver.org) version and a `CHANGELOG.md` in its branch.
+- Tags are prefixed with the project name: `midi-mixer/v1.0.0`, `deej-matrix/v1.0.0`, `deej-vanilla/v1.0.0`.
+- Pushing a tag makes GitHub Actions on that branch build the firmware and PC software and publish a release with the files.
 
----
+To release a new version of a project: update its `CHANGELOG.md`, commit, then
 
-## 📦 Features
+```bash
+git tag -a midi-mixer/v1.1.0 -m "midi-mixer v1.1.0"
+git push origin midi-mixer midi-mixer/v1.1.0
+```
 
-- 🎚️ Analog potentiometers to control application volumes
-- ⬛ MAX7219 LED matrix shows real-time values
-- 🔘 Customizable buttons for actions (mute, pause, etc.)
+## 🧩 Shared hardware
 
----
-
-## ⚙️ Hardware Requirements
-
-- Arduino 
-- MAX7219 LED matrix
-- Potentiometers or linear sliders
-- Optional: push buttons
-- Optional: capacitors for voltage stability
-
----
-
-## 🔌 Wiring Notes
-
-- Potentiometers: Connect to analog pins
-- Buttons: Connect to digital pins 
-- MAX7219: Connect via SPI
-
----
-
-## 🧠 Software Setup
-
-1. Flash the Arduino code from this repo (see `arduino/` folder).
-2. Download and run the desktop client (`deej.exe` from [Miodec releases](https://github.com/Miodec/deej/releases/tag/compile)).
-3. Configure `config.yaml` as in original deej.
-4. Enjoy physical control over your system audio!
-
----
+- [`3d_assets`](3d_assets): case models
+- [`assets`](assets): photos and the original deej schematic
 
 ## 👤 Credits
 
 - Original project: [omriharel](https://github.com/omriharel/deej)
 - Button support: [Miodec](https://github.com/Miodec/deej)
-- MAX7219 integration & this fork: [Figeiron](https://github.com/Figeiron)
+- MAX7219 integration, MIDI Mixer controller & this fork: [Figeiron](https://github.com/Figeiron)
 
 ## 📄 License
 
-This project follows the original [MIT License](https://github.com/omriharel/deej/blob/master/LICENSE).
-
+MIT, see [LICENSE](LICENSE).
