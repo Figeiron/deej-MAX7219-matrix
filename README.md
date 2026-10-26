@@ -6,6 +6,8 @@ A fork of [omriharel deej](https://github.com/omriharel/deej) with additional fe
 - ✅ **MAX7219 LED matrix display support** (shows current potentiometers values)
 - ✅ All original deej features preserved
 
+> This is the `deej-matrix` branch (Arduino Nano + MAX7219 matrix + deej). Other projects for the same hardware live in their own branches: see [`master`](../../tree/master).
+
 ![image](assets/build-3d.jpg)  
 
 ## 💡 About
@@ -49,10 +51,16 @@ This fork extends the original deej with support for:
 
 ## 🧠 Software Setup
 
-1. Flash the Arduino code from this repo (see `arduino/` folder).
-2. Download and run the desktop client (`deej.exe` from [Miodec releases](https://github.com/Miodec/deej/releases/tag/compile)).
-3. Configure `config.yaml` as in original deej.
+1. Download the latest [`deej-matrix/v*` release](../../releases).
+2. Flash `deej-matrix-firmware.hex` to the Nano, or build from source with `pio run -t upload` in `arduino/deej-5-sliders-matrix-pio`.
+3. Put `deej.exe` and `config.yaml` in one folder, set up `config.yaml` as in original deej and run `deej.exe`.
 4. Enjoy physical control over your system audio!
+
+---
+
+## 🏷️ Releases
+
+Versions follow [SemVer](https://semver.org); changes are listed in [CHANGELOG.md](CHANGELOG.md). Pushing a tag like `deej-matrix/v1.2.0` makes GitHub Actions build the firmware and `deej.exe` and publish them as a release.
 
 ---
 
