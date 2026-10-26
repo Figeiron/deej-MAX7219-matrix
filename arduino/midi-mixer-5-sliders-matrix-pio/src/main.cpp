@@ -24,9 +24,6 @@ const int analogInputs[NUM_SLIDERS] = {A0, A1, A2, A3, A10}; // A10 = pin 10
 const int NUM_BUTTONS = 6;
 const int buttonInputs[NUM_BUTTONS] = {9, 8, 7, 6, 5, 4};
 
-// Which slider's cursor blinks when MIDI Mixer reports the button's mute as on (-1 = none)
-const int buttonSlider[NUM_BUTTONS] = {0, 1, 2, 3, 4, -1};
-
 const uint8_t MIDI_CHANNEL = 0;     // channel 1
 const uint8_t SLIDER_CC_BASE = 1;   // sliders -> CC1..CC5
 const uint8_t BUTTON_NOTE_BASE = 60; // buttons -> notes 60..65
@@ -44,22 +41,41 @@ const int MAX_ANALOG_VALUE = 1023;
 const int MAX_MIDI_VALUE = 127;
 const int NUM_COLUMNS = 32;
 const int POT_HYSTERESIS = 5;
-const unsigned long MATRIX_REFRESH_MS = 30;
-const unsigned long BLINK_MS = 250;
+const int OVERSAMPLING = 4;
+const unsigned long SAMPLE_MS = 4;
+const unsigned long FRAME_MS = 8;
+const unsigned long BUTTON_DEBOUNCE_MS = 15;
+// While a slider is being moved, MIDI Mixer echoes our own values back a bit late;
+// ignore that echo for this long so the cursor doesn't jump back and forth
+const unsigned long LOCAL_HOLD_MS = 600;
+// How far (0..1023) the value must go past a column edge before the cursor moves
+const int COLUMN_HYSTERESIS = 8;
 
 int smoothedValues[NUM_SLIDERS];
 int sentValues[NUM_SLIDERS];
 int buttonValues[NUM_BUTTONS];
+unsigned long buttonChangedAt[NUM_BUTTONS];
 
-// What the matrix shows: volume reported back by MIDI Mixer (or local pot until it answers)
-uint8_t displayValues[NUM_SLIDERS];
-bool mutedSliders[NUM_SLIDERS];
+// What the matrix shows (0..1023): the local pot while it moves, otherwise the volume from MIDI Mixer
+int targetValues[NUM_SLIDERS];
+unsigned long lastLocalMove[NUM_SLIDERS];
+int targetColumns[NUM_SLIDERS];
+int shownColumns[NUM_SLIDERS];
 
-unsigned long lastMatrixUpdate = 0;
+unsigned long lastSample = 0;
+unsigned long lastFrame = 0;
+bool matrixDirty = true;
 
 int readSlider(int i)
 {
-  int value = analogRead(analogInputs[i]);
+  // Averaging a few reads removes most ADC noise before smoothing
+  int value = 0;
+  for (int k = 0; k < OVERSAMPLING; k++)
+  {
+    value += analogRead(analogInputs[i]);
+  }
+  value /= OVERSAMPLING;
+
   return INVERSE_POT ? MAX_ANALOG_VALUE - value : value;
 }
 
@@ -78,7 +94,7 @@ void sendNote(uint8_t note, bool on)
   MidiUSB.sendMIDI(packet);
 }
 
-bool updateSliderValues()
+bool updateSliderValues(unsigned long now)
 {
   bool sent = false;
 
@@ -93,16 +109,21 @@ bool updateSliderValues()
     if (sentValues[i] < 0 || (midiValue != sentValues[i] && abs(smoothedValues[i] - sentCenter) > POT_HYSTERESIS))
     {
       sentValues[i] = midiValue;
-      displayValues[i] = midiValue; // show local move instantly, MIDI Mixer feedback confirms it
+      lastLocalMove[i] = now;
       sendControlChange(SLIDER_CC_BASE + i, midiValue);
       sent = true;
+    }
+
+    if (now - lastLocalMove[i] < LOCAL_HOLD_MS)
+    {
+      targetValues[i] = smoothedValues[i]; // full 10-bit resolution, not the 7-bit MIDI value
     }
   }
 
   return sent;
 }
 
-bool updateButtonsValues()
+bool updateButtonsValues(unsigned long now)
 {
   bool sent = false;
 
@@ -110,9 +131,10 @@ bool updateButtonsValues()
   {
     int value = digitalRead(buttonInputs[i]);
 
-    if (value != buttonValues[i])
+    if (value != buttonValues[i] && now - buttonChangedAt[i] >= BUTTON_DEBOUNCE_MS)
     {
       buttonValues[i] = value;
+      buttonChangedAt[i] = now;
       sendNote(BUTTON_NOTE_BASE + i, value == LOW); // INPUT_PULLUP: LOW = pressed
       sent = true;
     }
@@ -121,17 +143,7 @@ bool updateButtonsValues()
   return sent;
 }
 
-void setButtonFeedback(int button, bool on)
-{
-  int slider = buttonSlider[button];
-
-  if (slider >= 0)
-  {
-    mutedSliders[slider] = on;
-  }
-}
-
-void readMidiFeedback()
+void readMidiFeedback(unsigned long now)
 {
   midiEventPacket_t packet;
 
@@ -151,23 +163,54 @@ void readMidiFeedback()
 
     if (type == 0xB0 && data1 >= SLIDER_CC_BASE && data1 < SLIDER_CC_BASE + NUM_SLIDERS)
     {
-      displayValues[data1 - SLIDER_CC_BASE] = data2;
-    }
-    else if (type == 0xB0 && data1 >= BUTTON_NOTE_BASE && data1 < BUTTON_NOTE_BASE + NUM_BUTTONS)
-    {
-      // Some feedback modes send button LEDs as CC on the same number
-      setButtonFeedback(data1 - BUTTON_NOTE_BASE, data2 > 0);
-    }
-    else if ((type == 0x90 || type == 0x80) && data1 >= BUTTON_NOTE_BASE && data1 < BUTTON_NOTE_BASE + NUM_BUTTONS)
-    {
-      setButtonFeedback(data1 - BUTTON_NOTE_BASE, type == 0x90 && data2 > 0);
+      int slider = data1 - SLIDER_CC_BASE;
+
+      if (now - lastLocalMove[slider] >= LOCAL_HOLD_MS)
+      {
+        targetValues[slider] = (long)data2 * MAX_ANALOG_VALUE / MAX_MIDI_VALUE;
+      }
     }
   }
 }
 
-int valueToColumn(int value)
+// 0..1023 -> 0..31, staying on the current column until the value is clearly past its edge
+int valueToColumn(int value, int current)
 {
-  return round(value * (NUM_COLUMNS - 1) / (float)MAX_MIDI_VALUE);
+  const float perColumn = (MAX_ANALOG_VALUE + 1) / (float)NUM_COLUMNS;
+  int column = constrain((int)(value / perColumn), 0, NUM_COLUMNS - 1);
+
+  if (column != current &&
+      value >= current * perColumn - COLUMN_HYSTERESIS &&
+      value < (current + 1) * perColumn + COLUMN_HYSTERESIS)
+  {
+    return current;
+  }
+
+  return column;
+}
+
+// Glide shown cursors toward their targets: big jumps ease out over a few frames
+void animateCursors()
+{
+  for (int i = 0; i < NUM_SLIDERS; i++)
+  {
+    targetColumns[i] = valueToColumn(targetValues[i], targetColumns[i]);
+
+    int distance = targetColumns[i] - shownColumns[i];
+    if (distance == 0)
+    {
+      continue;
+    }
+
+    int step = distance / 3;
+    if (step == 0)
+    {
+      step = distance > 0 ? 1 : -1;
+    }
+
+    shownColumns[i] += step;
+    matrixDirty = true;
+  }
 }
 
 void drawCursor(int slider, int column)
@@ -183,28 +226,30 @@ void drawCursor(int slider, int column)
 
 void updateMatrix()
 {
-  bool blinkOff = (millis() / BLINK_MS) % 2;
+  animateCursors();
+
+  // Only push to the MAX7219s when something moved
+  if (!matrixDirty)
+  {
+    return;
+  }
+
+  matrixDirty = false;
 
   matrix.control(MD_MAX72XX::UPDATE, MD_MAX72XX::OFF);
   matrix.clear();
 
-  int mainCursorPos = valueToColumn(displayValues[0]);
-
-  if (!(mutedSliders[0] && blinkOff))
-  {
-    drawCursor(0, mainCursorPos);
-  }
+  int mainCursorPos = shownColumns[0];
+  drawCursor(0, mainCursorPos);
 
   for (int i = 1; i < NUM_SLIDERS; i++)
   {
-    int new_pos = valueToColumn(displayValues[i]);
-
-    if (new_pos == mainCursorPos || (mutedSliders[i] && blinkOff))
+    if (shownColumns[i] == mainCursorPos)
     {
       continue;
     }
 
-    drawCursor(i, new_pos);
+    drawCursor(i, shownColumns[i]);
   }
 
   matrix.control(MD_MAX72XX::UPDATE, MD_MAX72XX::ON);
@@ -229,8 +274,9 @@ void initValues()
   {
     smoothedValues[i] = readSlider(i);
     sentValues[i] = -1; // forces the first send so MIDI Mixer picks up current positions
-    displayValues[i] = smoothedValues[i] >> 3;
-    mutedSliders[i] = false;
+    targetValues[i] = smoothedValues[i];
+    targetColumns[i] = valueToColumn(targetValues[i], 0);
+    shownColumns[i] = targetColumns[i];
   }
 
   for (int i = 0; i < NUM_BUTTONS; i++)
@@ -251,21 +297,27 @@ void setup()
 
 void loop()
 {
-  bool sent = updateSliderValues();
-  sent |= updateButtonsValues();
+  unsigned long now = millis();
+  bool sent = false;
+
+  if (now - lastSample >= SAMPLE_MS)
+  {
+    lastSample = now;
+    sent |= updateSliderValues(now);
+  }
+
+  sent |= updateButtonsValues(now);
 
   if (sent)
   {
     MidiUSB.flush();
   }
 
-  readMidiFeedback();
+  readMidiFeedback(now);
 
-  if (millis() - lastMatrixUpdate >= MATRIX_REFRESH_MS)
+  if (now - lastFrame >= FRAME_MS)
   {
-    lastMatrixUpdate = millis();
+    lastFrame = now;
     updateMatrix();
   }
-
-  delay(5); // also debounces the buttons
 }
