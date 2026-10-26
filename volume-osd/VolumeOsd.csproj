@@ -9,7 +9,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>VolumeOsd</AssemblyName>
     <RootNamespace>VolumeOsd</RootNamespace>
-    <ApplicationIcon>..\pkg\deej\assets\logo.ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
     <Product>Volume OSD</Product>
   </PropertyGroup>
 

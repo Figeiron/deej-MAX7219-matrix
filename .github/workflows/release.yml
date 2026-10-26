@@ -1,0 +1,96 @@
+name: midi-mixer
+
+# Builds on every push to the branch; a tag like midi-mixer/v1.2.0 also publishes a GitHub release
+on:
+  push:
+    branches: [midi-mixer]
+    tags: ["midi-mixer/v*"]
+  pull_request:
+    branches: [midi-mixer]
+
+env:
+  # Folder name MIDI Mixer uses for the profile (%APPDATA%\midi-mixer-app\profiles\<id>)
+  PROFILE_ID: 01M5SN0VC9CMZCX5BK12BF42F7
+
+jobs:
+  firmware:
+    name: Firmware and profile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Build firmware
+        working-directory: arduino/midi-mixer-5-sliders-matrix-pio
+        run: pio run
+
+      - name: Package
+        run: |
+          mkdir -p dist "staging/$PROFILE_ID"
+          cp arduino/midi-mixer-5-sliders-matrix-pio/.pio/build/promicro/firmware.hex dist/midi-mixer-firmware.hex
+          cp midi-mixer-profile/* "staging/$PROFILE_ID/"
+          (cd staging && zip -r ../dist/midi-mixer-profile.zip .)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware-and-profile
+          path: dist/
+
+  osd:
+    name: Volume OSD plugin
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build and package
+        shell: pwsh
+        run: |
+          $plugin = "staging/com.figeiron.volume-osd"
+          dotnet publish volume-osd/VolumeOsd.csproj -c Release -r win-x64 `
+            -p:SelfContained=false -p:PublishSingleFile=true -p:DebugType=none -o "$plugin/bin"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Copy-Item midi-mixer-plugin/plugin.json, midi-mixer-plugin/main.js $plugin
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Compress-Archive -Path staging/* -DestinationPath dist/volume-osd-plugin.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: volume-osd
+          path: dist/
+
+  release:
+    name: GitHub release
+    if: startsWith(github.ref, 'refs/tags/midi-mixer/v')
+    needs: [firmware, osd]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Release notes from CHANGELOG.md
+        run: |
+          version="${GITHUB_REF_NAME#midi-mixer/v}"
+          awk -v v="$version" '/^## \[/ { p = index($0, "[" v "]") > 0; next } p' CHANGELOG.md > notes.md
+          cat notes.md
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body_path: notes.md
+          files: dist/*
